@@ -1,0 +1,70 @@
+包扫描 ：
+	类加载器.getResources(包路径)，获取路径下的所有文件 转化为class文件  保存到容器中
+自定义注解：通过包扫描和spring生命周期函数获取注解做指定操作
+MVC封装：先通过扫包获取所有controller的class对象，获取对应的注解 作为路由条件  ，接受到请求的时候 通过对应的路由信息通过反射
+调用对应的方法
+
+并发包：concurrenthashmap CopyOnWriteArrayList ConcurrentLinkedQueue
+
+线程池：
+	创建 Executors.  new ThreadPoolExecutor()
+
+核心线程池  缓存队列  最大线程池
+
+多路复用io  再linux中socket就是一个文件
+	select模型 用一个或一个线程池去监控 socket文件  如果发生变化 进行轮询找到发生变化的socket交给业务线程处理
+	epull模型 基于回掉，文件发生变化的时候 进行回调 再转发到业务线程
+	netty支持这两种模型
+jvm虚拟机
+	内存结构
+	垃圾回收算法
+
+	
+数据库死锁
+	事物：ACID 原子性 一致性 隔离性 持久性
+	事物隔离级别：读未提交  读已提交 可重复读 串行话
+	写锁：相互之间排斥，与其它锁不排斥
+	读锁：相互之间不排斥，与其它锁排斥
+
+	可重复读级别下非主键定位 会有大量间隙锁出现
+
+出现死锁的情况
+	begin;
+		update  where id = 6;         begin;
+							update  where id = 10;
+		delete  where id = 10;
+						delete  where id = 6;
+
+	解决方案：
+		1、根据业务逻辑，     a、更改where条件，     b、新建索引，修改索引
+		2、使用mysql自带函数,例如：   select ... for update;   insert into ... or  update set ...;  
+		insert into ... select from ... on duplicate update ...
+
+redis:
+	常用的数据结构 ： String类型 存json
+			Hash 类型  做留言业务：存树形结构，且数据不做落地所以选择这种数据结构
+	事务：牺牲了ACID中的一项或几项
+		采用流水线的方式来处理事物，当开启redis事务之后会将 后续的命令存储在一个队列中，
+                直到事物结束再将命令一起执行，在执行过程中具有排他性，拒绝其它线程访问
+	持久化模式：1 在一定的时间间隔将所有的数据写入到硬盘中
+		    2 在执行写命令的时候将命令追加到硬件文件中
+	并发：单机支持10WQPS
+mysql&&sql优化：
+	优化：
+	组合索引，从左往右依次匹配的，直接调用右端的索引是无法使用到组合索引的
+	like 查询的时候 左模糊无法使用到索引
+	使用or 的时候 每个条件都必须加索引，只要有一个没加索引 都无法使用索引
+	判断是否为空的时候用is null,不要用 =null,=null 不会使用索引
+	使用group by 分组的时候不能使用索引，默认全表扫描，并且默认排序， order by null 禁止使用排序，可以快些
+	用> 代替 >= ,后者会做两次全表扫描
+	in 和 not in 也会导致索引失效
+	查询量大的时候缓存，分表，分页
+
+聚触索引和非聚触索引的区别
+		
+		
+
+
+
+
+	
